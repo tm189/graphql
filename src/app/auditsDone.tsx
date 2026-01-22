@@ -239,7 +239,7 @@ interface Transaction {
   path: string;
 }
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 3;
 
 export default function AuditsDone({ token }: { token: string }) {
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -277,14 +277,14 @@ export default function AuditsDone({ token }: { token: string }) {
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ query }),
-          }
+          },
         );
 
         const json = await res.json();
 
         const sorted = json.data.transaction.sort(
           (a: Transaction, b: Transaction) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
 
         setTransactions(sorted);
@@ -303,7 +303,7 @@ export default function AuditsDone({ token }: { token: string }) {
   const pages = Array.from({
     length: Math.ceil(transactions.length / PAGE_SIZE),
   }).map((_, i) =>
-    transactions.slice(i * PAGE_SIZE, i * PAGE_SIZE + PAGE_SIZE)
+    transactions.slice(i * PAGE_SIZE, i * PAGE_SIZE + PAGE_SIZE),
   );
 
   /* ---------------- track active page ---------------- */

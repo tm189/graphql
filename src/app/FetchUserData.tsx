@@ -48,7 +48,7 @@ export default function FetchUserData({
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ query }),
-          }
+          },
         );
 
         if (!res.ok) {
@@ -124,12 +124,12 @@ export default function FetchUserData({
         <p className="empty">No user data available.</p>
       )}
 
-      {data && (
+      {/* {data && (
         <details className="raw-data">
           <summary>View Raw Data</summary>
           <pre>{JSON.stringify(data, null, 2)}</pre>
         </details>
-      )}
+      )} */}
     </div>
   );
 }

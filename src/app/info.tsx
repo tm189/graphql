@@ -1,10 +1,10 @@
 "use client";
 
-import TotalXP from "./xpamount";
+import TotalXP from "./TotalXP";
 import { useAudit } from "./useAudit";
 import AuditsDone from "./auditsDone";
 import RawAuditData from "./rawData";
-import { RawXPDebug } from "./xpamount";
+import { RawXPDebug } from "./TotalXP";
 export default function InfoPage({ token }: { token: string }) {
   return (
     <div>

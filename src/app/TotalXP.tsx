@@ -32,7 +32,7 @@ export default function TotalXP({ token }: { token: string }) {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ query }),
-        }
+        },
       );
 
       const json = await res.json();
@@ -40,7 +40,7 @@ export default function TotalXP({ token }: { token: string }) {
 
       const sum = transactions.reduce(
         (acc: number, t: { amount: number }) => acc + t.amount,
-        0
+        0,
       );
 
       setTotalXP(sum);
@@ -59,10 +59,11 @@ export default function TotalXP({ token }: { token: string }) {
     return (Math.round(kb * 100) / 100).toFixed(2);
   }
   return (
-    <div>
-      <h2>Total XP</h2>
-      <p>{Number(formatXP(totalXP)) + 1}</p>
-      <p>{totalXP}</p>
+    <div className="xp-stat">
+      <div className="xp-row">
+        <span className="xp-stat__label">Total XP</span>
+        <span className="xp-stat__value">{Number(formatXP(totalXP)) + 1}</span>
+      </div>
     </div>
   );
 }
@@ -104,7 +105,7 @@ export function RawXPDebug({ token }: { token: string }) {
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ query }),
-          }
+          },
         );
 
         const json = await res.json();

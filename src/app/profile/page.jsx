@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import Audit from "../audit";
 import ProjectResultsGraph from "../project";
 import FetchUserData from "../FetchUserData";
-import TotalXP from "../xpamount";
+import TotalXP from "../TotalXP";
 import AuditsDone from "../auditsDone";
-import JSPiscineXP from "../xpamount copy";
+import JSPiscineXP from "../JsPiscine";
+import { RawXPDebug } from "../TotalXP";
+import GoPiscineXP from "../GoPiscine";
 import InfoPage from "../info";
 import "./profile.css";
 export default function ProfilePage() {
@@ -51,8 +53,13 @@ export default function ProfilePage() {
 
       <div className="profile-grid">
         <div className="profile-card">
-          <TotalXP token={token} />
-          <JSPiscineXP token={token} />
+          <div className="xp-card">
+            <h2>XP Summary</h2>
+            <TotalXP token={token} />
+            <JSPiscineXP token={token} />
+            <GoPiscineXP token={token} />
+            {/* <RawXPDebug token={token} /> */}
+          </div>
         </div>
 
         <div className="profile-card">
