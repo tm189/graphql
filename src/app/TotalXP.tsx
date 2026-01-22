@@ -68,75 +68,75 @@ export default function TotalXP({ token }: { token: string }) {
   );
 }
 
-export function RawXPDebug({ token }: { token: string }) {
-  const [raw, setRaw] = useState<unknown[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
+// export function RawXPDebug({ token }: { token: string }) {
+//   const [raw, setRaw] = useState<unknown[] | null>(null);
+//   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!token) return;
+//   useEffect(() => {
+//     if (!token) return;
 
-    const fetchRaw = async () => {
-      try {
-        const query = `
-          query {
-            transaction(where: { type: { _eq: "xp" } }) {
-              id
-              amount
-              type
-              createdAt
-              campus
-              path
-              eventId
-              object {
-                id
-                name
-                type
-              }
-            }
-          }
-        `;
+//     const fetchRaw = async () => {
+//       try {
+//         const query = `
+//           query {
+//             transaction(where: { type: { _eq: "xp" } }) {
+//               id
+//               amount
+//               type
+//               createdAt
+//               campus
+//               path
+//               eventId
+//               object {
+//                 id
+//                 name
+//                 type
+//               }
+//             }
+//           }
+//         `;
 
-        const res = await fetch(
-          "https://learn.reboot01.com/api/graphql-engine/v1/graphql",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ query }),
-          },
-        );
+//         const res = await fetch(
+//           "https://learn.reboot01.com/api/graphql-engine/v1/graphql",
+//           {
+//             method: "POST",
+//             headers: {
+//               "Content-Type": "application/json",
+//               Authorization: `Bearer ${token}`,
+//             },
+//             body: JSON.stringify({ query }),
+//           },
+//         );
 
-        const json = await res.json();
-        setRaw(json.data.transaction);
-      } catch (e) {
-        setError("Failed to fetch XP transactions");
-      }
-    };
+//         const json = await res.json();
+//         setRaw(json.data.transaction);
+//       } catch (e) {
+//         setError("Failed to fetch XP transactions");
+//       }
+//     };
 
-    fetchRaw();
-  }, [token]);
+//     fetchRaw();
+//   }, [token]);
 
-  if (error) return <p>{error}</p>;
-  if (!raw) return <p>Loading raw XP data…</p>;
+//   if (error) return <p>{error}</p>;
+//   if (!raw) return <p>Loading raw XP data…</p>;
 
-  return (
-    <div style={{ maxWidth: "100%", overflowX: "auto" }}>
-      <h3>Raw XP Transactions</h3>
-      <pre
-        style={{
-          background: "#0b1023",
-          color: "#e9ecff",
-          padding: "16px",
-          borderRadius: "8px",
-          fontSize: "12px",
-          maxHeight: "500px",
-          overflow: "auto",
-        }}
-      >
-        {JSON.stringify(raw, null, 2)}
-      </pre>
-    </div>
-  );
-}
+//   return (
+//     <div style={{ maxWidth: "100%", overflowX: "auto" }}>
+//       <h3>Raw XP Transactions</h3>
+//       <pre
+//         style={{
+//           background: "#0b1023",
+//           color: "#e9ecff",
+//           padding: "16px",
+//           borderRadius: "8px",
+//           fontSize: "12px",
+//           maxHeight: "500px",
+//           overflow: "auto",
+//         }}
+//       >
+//         {JSON.stringify(raw, null, 2)}
+//       </pre>
+//     </div>
+//   );
+// }

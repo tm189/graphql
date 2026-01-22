@@ -8,13 +8,13 @@ import FetchUserData from "../FetchUserData";
 import TotalXP from "../TotalXP";
 import AuditsDone from "../auditsDone";
 import JSPiscineXP from "../JsPiscine";
-import { RawXPDebug } from "../TotalXP";
+
 import GoPiscineXP from "../GoPiscine";
-import InfoPage from "../info";
+
 import "./profile.css";
 export default function ProfilePage() {
   const router = useRouter();
-  const [token, setToken] = useState(() => {
+  const [token] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("jwt");
     }
@@ -58,7 +58,6 @@ export default function ProfilePage() {
             <TotalXP token={token} />
             <JSPiscineXP token={token} />
             <GoPiscineXP token={token} />
-            {/* <RawXPDebug token={token} /> */}
           </div>
         </div>
 

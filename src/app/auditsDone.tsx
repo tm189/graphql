@@ -335,13 +335,13 @@ export default function AuditsDone({ token }: { token: string }) {
   const getProjectName = (path: string) =>
     path.split("/").filter(Boolean).pop();
 
-  function formatXP(value: number): string {
-    if (value < 1000) return value.toString();
-    const kb = value / 1000;
-    if (kb >= 100) return Math.round(kb).toString();
-    if (kb >= 10) return (Math.round(kb * 10) / 10).toFixed(1);
-    return (Math.round(kb * 100) / 100).toFixed(2);
-  }
+  // function formatXP(value: number): string {
+  //   if (value < 1000) return value.toString();
+  //   const kb = value / 1000;
+  //   if (kb >= 100) return Math.round(kb).toString();
+  //   if (kb >= 10) return (Math.round(kb * 10) / 10).toFixed(1);
+  //   return (Math.round(kb * 100) / 100).toFixed(2);
+  // }
 
   /* ---------------- early returns ---------------- */
 

@@ -72,7 +72,7 @@ export default function FetchUserData({
     };
 
     fetchUserData();
-  }, [token]);
+  }, [token, onUserName]);
 
   const fixDate = function (date: string | null) {
     if (!date) return "N/A";
