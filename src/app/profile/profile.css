@@ -126,14 +126,16 @@
   gap: 12px;
 }
 .xp-stat__label {
-  font-size: 12px;
+  font-size: 17px;
+  font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted);
 }
 
 .xp-stat__value {
-  font-size: 14px;
+  font-size: 17px;
+  font-weight: bold;
   color: var(--foreground);
   text-align: right;
   white-space: nowrap;

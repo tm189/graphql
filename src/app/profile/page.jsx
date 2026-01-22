@@ -53,8 +53,8 @@ export default function ProfilePage() {
 
       <div className="profile-grid">
         <div className="profile-card">
+          <h2>XP Summary</h2>
           <div className="xp-card">
-            <h2>XP Summary</h2>
             <TotalXP token={token} />
             <JSPiscineXP token={token} />
             <GoPiscineXP token={token} />
