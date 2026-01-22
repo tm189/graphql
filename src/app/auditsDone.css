@@ -1,0 +1,112 @@
+.audits-done {
+  width: 100%;
+}
+
+/* horizontal snap container */
+.audit-slider {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.audit-slider::-webkit-scrollbar {
+  display: none;
+}
+
+/* one page */
+.audit-page {
+  flex: 0 0 100%;
+  width: 100%;
+  scroll-snap-align: start;
+  padding: 4px; /* 👈 spacing INSIDE the page */
+}
+
+/* list */
+.audit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.audit-item {
+  list-style: none;
+}
+
+/* bubble card */
+.audit-bubble {
+  background: var(--card);
+  border: 1px solid var(--stroke);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.audit-bubble:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* rows inside bubble */
+.audit-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+/* label / value */
+.audit-row .label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.audit-row .value {
+  font-size: 14px;
+  color: var(--foreground);
+  text-align: right;
+  white-space: nowrap;
+}
+/* page dots */
+.page-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+/* base dot */
+.dot {
+  height: 6px;
+  width: 6px;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  background: var(--muted);
+  opacity: 0.4;
+
+  transition: width 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
+}
+
+/* active page */
+.dot.active {
+  width: 18px; /* pill */
+  background: var(--primary);
+  opacity: 1;
+}
+
+.dot:hover {
+  opacity: 0.7;
+}
