@@ -1,5 +1,5 @@
 "use client";
-
+// Profile page
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import FetchUserData from "../FetchUserData";
