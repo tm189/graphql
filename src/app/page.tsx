@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
@@ -9,6 +9,13 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const existingToken = localStorage.getItem("jwt");
+    if (existingToken) {
+      router.replace("/profile");
+    }
+  }, [router]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -65,7 +72,12 @@ export default function LoginPage() {
               className="password-toggle"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? "👁️" : "👁️‍🗨️"}
+              <img
+                src={showPassword ? "./hide.png" : "./show.png"}
+                alt="Toggle password visibility"
+                width={20}
+                height={20}
+              />
             </button>
           </div>
 

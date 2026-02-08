@@ -1,0 +1,293 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import "./auditsDone.css";
+interface AuditRow {
+  id: number;
+  createdAt: string;
+  grade: number | null;
+  auditorId: number;
+  group: {
+    eventId: number | null;
+    objectId: number | null;
+    captain: { login: string } | null;
+    object: { name: string } | null;
+  } | null;
+}
+
+interface UpTx {
+  id: string;
+  type: "up";
+  amount: number;
+  createdAt: string;
+  objectId: number | null;
+  eventId: number | null;
+  userId: number;
+}
+
+type AuditMerged = {
+  id: number;
+  createdAt: string;
+  projectName: string;
+  captainName: string;
+  xp: number | null;
+};
+
+const PAGE_SIZE = 3;
+
+export default function Audits({ token }: { token: string }) {
+  const sliderRef = useRef<HTMLDivElement>(null);
+
+  const [merged, setMerged] = useState<AuditMerged[]>([]);
+  const [activePage, setActivePage] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fixDate = (date: string | null) => {
+    if (!date) return "N/A";
+    const d = new Date(date);
+    return d.toLocaleDateString("en-UK", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const pickClosestTx = (auditCreatedAt: string, txs: UpTx[]) => {
+    if (txs.length === 0) return null;
+    if (txs.length === 1) return txs[0];
+
+    const aTime = new Date(auditCreatedAt).getTime();
+    let best = txs[0];
+    let bestDiff = Math.abs(new Date(best.createdAt).getTime() - aTime);
+
+    for (let i = 1; i < txs.length; i++) {
+      const diff = Math.abs(new Date(txs[i].createdAt).getTime() - aTime);
+      if (diff < bestDiff) {
+        best = txs[i];
+        bestDiff = diff;
+      }
+    }
+    return best;
+  };
+
+  useEffect(() => {
+    if (!token) return;
+
+    const fetchBothAndMerge = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const query = `
+      query {
+  audit(
+    where: { grade: { _is_null: false } }
+    order_by: { createdAt: desc }
+  ) {
+    id
+    createdAt
+    grade
+    auditorId
+    group {
+      eventId
+      objectId
+      captain { login }
+      object { name }
+    }
+  }
+
+  transaction(
+    where: { type: { _eq: "up" } }
+    order_by: { createdAt: desc }
+  ) {
+    id
+    type
+    amount
+    createdAt
+    objectId
+    eventId
+    userId
+  }
+}
+
+        `;
+
+        const res = await fetch(
+          "https://learn.reboot01.com/api/graphql-engine/v1/graphql",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ query }),
+          },
+        );
+
+        const json = await res.json();
+
+        if (json.errors?.length) {
+          console.error(json.errors);
+          setError("Failed to fetch audits (GraphQL error)");
+          setMerged([]);
+          return;
+        }
+
+        const audits: AuditRow[] = json.data?.audit ?? [];
+        const txs: any[] = json.data?.transaction ?? [];
+
+        const myId = txs[0]?.userId;
+
+        // If we can’t detect myId, fall back to not filtering (or show error)
+        const myAudits = myId
+          ? audits.filter((a) => a.auditorId === myId)
+          : audits;
+
+        // keep grade not null + required group fields
+        const cleanAudits = myAudits.filter(
+          (a) =>
+            a.grade !== null &&
+            a.group?.objectId != null &&
+            a.group?.eventId != null &&
+            a.group?.object?.name &&
+            a.group?.captain?.login,
+        );
+
+        // ✅ HARD FILTER: keep ONLY rows where type === "up"
+        const cleanUpTx: UpTx[] = txs
+          .filter(
+            (t: any) =>
+              t?.type === "up" &&
+              t.objectId != null &&
+              t.eventId != null &&
+              typeof t.amount === "number",
+          )
+          .map((t: any) => ({
+            id: String(t.id),
+            type: "up" as const,
+            amount: t.amount,
+            createdAt: t.createdAt,
+            objectId: t.objectId,
+            eventId: t.eventId,
+          }));
+
+        // Index UP tx by key
+        const txByKey = new Map<string, UpTx[]>();
+        for (const t of cleanUpTx) {
+          const key = `${t.objectId}-${t.eventId}`;
+          const arr = txByKey.get(key);
+          if (arr) arr.push(t);
+          else txByKey.set(key, [t]);
+        }
+
+        // Merge
+        const mergedRows: AuditMerged[] = cleanAudits.map((a) => {
+          const key = `${a.group!.objectId}-${a.group!.eventId}`;
+          const candidates = txByKey.get(key) ?? [];
+          const tx = pickClosestTx(a.createdAt, candidates);
+
+          return {
+            id: a.id,
+            createdAt: a.createdAt,
+            projectName: a.group!.object!.name,
+            captainName: a.group!.captain!.login,
+            xp: tx ? tx.amount : null,
+          };
+        });
+
+        setMerged(mergedRows);
+      } catch (e) {
+        console.error(e);
+        setError("Failed to fetch audits");
+        setMerged([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBothAndMerge();
+  }, [token]);
+
+  const pages = useMemo(() => {
+    return Array.from({ length: Math.ceil(merged.length / PAGE_SIZE) }).map(
+      (_, i) => merged.slice(i * PAGE_SIZE, i * PAGE_SIZE + PAGE_SIZE),
+    );
+  }, [merged]);
+
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    const updateActivePage = () => {
+      const pageWidth = slider.clientWidth;
+      if (pageWidth === 0) return;
+      setActivePage(Math.round(slider.scrollLeft / pageWidth));
+    };
+
+    updateActivePage();
+    slider.addEventListener("scroll", updateActivePage, { passive: true });
+    return () => slider.removeEventListener("scroll", updateActivePage);
+  }, [pages.length]);
+
+  if (loading) return <p>Loading audits…</p>;
+  if (error) return <p>{error}</p>;
+  if (merged.length === 0) return <p>No completed audits yet.</p>;
+
+  return (
+    <div className="audits-done">
+      <h2>Audits You Completed</h2>
+
+      <div className="audit-slider" ref={sliderRef}>
+        {pages.map((page, i) => (
+          <div key={i} className="audit-page">
+            <ul className="audit-list">
+              {page.map((row) => (
+                <li key={row.id} className="audit-item">
+                  <div className="audit-bubble">
+                    <div className="audit-row">
+                      <span className="label">Project</span>
+                      <span className="value">{row.projectName}</span>
+                    </div>
+
+                    <div className="audit-row">
+                      <span className="label">Captain</span>
+                      <span className="value">{row.captainName}</span>
+                    </div>
+
+                    <div className="audit-row">
+                      <span className="label">XP</span>
+                      <span className="value">{row.xp ?? "—"}</span>
+                    </div>
+
+                    <div className="audit-row">
+                      <span className="label">Date</span>
+                      <span className="value">{fixDate(row.createdAt)}</span>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      {pages.length > 1 && (
+        <div className="page-dots">
+          {pages.map((_, i) => (
+            <button
+              key={i}
+              className={`dot ${i === activePage ? "active" : ""}`}
+              onClick={() => {
+                const el = sliderRef.current;
+                if (!el) return;
+                el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
+              }}
+              aria-label={`Go to page ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

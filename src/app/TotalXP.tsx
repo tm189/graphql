@@ -62,7 +62,9 @@ export default function TotalXP({ token }: { token: string }) {
     <div className="xp-stat">
       <div className="xp-row">
         <span className="xp-stat__label">Total XP</span>
-        <span className="xp-stat__value">{Number(formatXP(totalXP)) + 1}</span>
+        <span className="xp-stat__value">
+          {Number(formatXP(totalXP)) + 1} kB
+        </span>
       </div>
     </div>
   );

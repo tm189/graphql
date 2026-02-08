@@ -74,10 +74,13 @@ export default function FetchUserData({
     fetchUserData();
   }, [token, onUserName]);
 
-  const fixDate = function (date: string | null) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const fixDate = (date: string | null) => {
     if (!date) return "N/A";
-    const d = new Date(date);
-    return d.toLocaleDateString("en-UK", {
+    if (!mounted) return "…"; // stable placeholder for SSR + first client render
+    return new Date(date).toLocaleDateString("en-GB", {
       year: "numeric",
       month: "long",
       day: "numeric",

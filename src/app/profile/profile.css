@@ -20,6 +20,7 @@
 }
 
 .logout-btn {
+  position: relative;
   padding: 10px 14px;
   background: transparent;
   border: 1px solid var(--border);
@@ -27,6 +28,14 @@
   color: var(--foreground);
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.logout-btn img {
+  filter: invert(1);
 }
 
 .logout-btn:hover {
@@ -48,7 +57,7 @@
   padding: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   min-width: 0;
-
+  min-height: fit-content;
   overflow: visible;
 }
 

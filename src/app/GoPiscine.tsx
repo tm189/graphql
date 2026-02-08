@@ -63,7 +63,7 @@ query GetProjectExamPiscineXP {
     <div className="xp-stat">
       <div className="xp-row">
         <span className="xp-stat__label">Go Piscine XP</span>
-        <span className="xp-stat__value">{Number(formatXP(totalXP))}</span>
+        <span className="xp-stat__value">{Number(formatXP(totalXP))} kB</span>
       </div>
       {/* <p>{totalXP}</p> */}
     </div>

@@ -2,51 +2,55 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Audit from "../audit";
-import ProjectResultsGraph from "../project";
 import FetchUserData from "../FetchUserData";
 import TotalXP from "../TotalXP";
-import AuditsDone from "../auditsDone";
 import JSPiscineXP from "../JsPiscine";
-
 import GoPiscineXP from "../GoPiscine";
-
+import Audit from "../audit";
+import ProjectResultsGraph from "../project";
+import MyAudits from "../myaudits";
 import "./profile.css";
+
 export default function ProfilePage() {
   const router = useRouter();
-  const [token] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("jwt");
-    }
-    return null;
-  });
+
+  // ✅ always the same on first render
+  const [token, setToken] = useState(null);
   const [userName, setUserName] = useState(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!token) {
-      router.push("/");
-    }
-  }, [token, router]);
+    setMounted(true);
+    const t = localStorage.getItem("jwt");
+    setToken(t);
+
+    if (!t) router.push("/");
+  }, [router]);
 
   function logout() {
     localStorage.removeItem("jwt");
     router.push("/");
   }
 
+  if (!mounted) return null;
+
   return (
     <div className="profile-container">
-      {/* HEADER */}
       <div className="profile-header">
         <h1 className="profile-title">PROFILE</h1>
+
         <button className="logout-btn" onClick={logout}>
           Logout
+          <img src="./logout.png" alt="Logout" width={20} height={20} />
         </button>
       </div>
+
       {userName && (
         <p className="profile-greeting">
           Hi <span>{userName}</span>
         </p>
       )}
+
       <div className="profile-card user-data">
         {token && <FetchUserData token={token} onUserName={setUserName} />}
       </div>
@@ -55,14 +59,14 @@ export default function ProfilePage() {
         <div className="profile-card">
           <h2>XP Summary</h2>
           <div className="xp-card">
-            <TotalXP token={token} />
-            <JSPiscineXP token={token} />
-            <GoPiscineXP token={token} />
+            {token && <TotalXP token={token} />}
+            {token && <JSPiscineXP token={token} />}
+            {token && <GoPiscineXP token={token} />}
           </div>
         </div>
 
         <div className="profile-card">
-          <AuditsDone token={token} />
+          {token && <MyAudits token={token} />}
         </div>
       </div>
 
