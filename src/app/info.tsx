@@ -4,14 +4,14 @@ import TotalXP from "./TotalXP";
 import { useAudit } from "./useAudit";
 import AuditsDone from "./auditsDone";
 import RawAuditData from "./rawData";
-import { RawXPDebug } from "./TotalXP";
+// import { RawXPDebug } from "./TotalXP";
 export default function InfoPage({ token }: { token: string }) {
   return (
     <div>
       <div style={profileGrid}>
         <div>
           <TotalXP token={token} />
-          <RawXPDebug token={token} />
+          {/* <RawXPDebug token={token} /> */}
         </div>
 
         <AuditsDone token={token} />
