@@ -166,14 +166,6 @@ export default function XPByProjectGraph({ token }: { token: string }) {
               >
                 {d.project}
               </text>
-              {/* <foreignObject
-                x={x}
-                y={height - padding + 8}
-                width={barWidth - 20}
-                height={60}
-              >
-                <div className="xp-project-label-fo">{d.project}</div>
-              </foreignObject> */}
             </g>
           );
         })}

@@ -48,6 +48,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  margin-top: 5%;
 }
 
 .audit-stat {
@@ -79,6 +80,7 @@
   gap: 16px;
   overflow: visible;
   max-height: fit-content;
+  padding-bottom: 150px;
 }
 
 .xp-graph-title {
@@ -135,14 +137,6 @@
   font-size: 10px;
   letter-spacing: 0.3px;
   font-weight: 500;
-}
-
-.xp-project-label-fo {
-  font-size: 11px;
-  text-align: center;
-  word-wrap: wrap;
-  overflow-wrap: wrap;
-  line-height: 1.1;
 }
 
 /* Empty state */
