@@ -12,7 +12,7 @@ interface MyAuditRow {
   } | null;
 }
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 5;
 
 export default function MyAudits({ token }: { token: string }) {
   const sliderRef = useRef<HTMLDivElement>(null);

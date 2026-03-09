@@ -1,5 +1,4 @@
 "use client";
-// Profile page
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import FetchUserData from "../FetchUserData";
@@ -10,7 +9,7 @@ import Audit from "../audit";
 import ProjectResultsGraph from "../project";
 import MyAudits from "../myaudits";
 import "./profile.css";
-
+import FakeProjects from "../fakeProjectData";
 export default function ProfilePage() {
   const router = useRouter();
 
@@ -50,12 +49,10 @@ export default function ProfilePage() {
           Hi <span>{userName}</span>
         </p>
       )}
-
-      <div className="profile-card user-data">
-        {token && <FetchUserData token={token} onUserName={setUserName} />}
-      </div>
-
       <div className="profile-grid">
+        <div className="profile-card user-data">
+          {token && <FetchUserData token={token} onUserName={setUserName} />}
+        </div>
         <div className="profile-card">
           <h2>XP Summary</h2>
           <div className="xp-card">
@@ -64,21 +61,22 @@ export default function ProfilePage() {
             {token && <GoPiscineXP token={token} />}
           </div>
         </div>
-
+      </div>
+      <div className="profile-grid">
         <div className="profile-card">
           {token && <MyAudits token={token} />}
         </div>
-      </div>
-
-      <div className="profile-grid">
         <div className="profile-card">
           <h2>Audit Summary</h2>
           {token && <Audit token={token} />}
         </div>
+      </div>
 
+      <div>
         <div className="profile-card">
           <h2>Project Results</h2>
           {token && <ProjectResultsGraph token={token} />}
+          {/* {token && <FakeProjects token={token} />} */}
         </div>
       </div>
     </div>

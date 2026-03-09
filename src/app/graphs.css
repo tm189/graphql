@@ -144,3 +144,7 @@
   font-size: 13px;
   color: var(--muted2);
 }
+
+.xp-graph {
+  overflow-x: auto;
+}

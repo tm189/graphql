@@ -63,9 +63,13 @@ export default function XPByProjectGraph({ token }: { token: string }) {
     return <p className="xp-empty">No XP data</p>;
   }
 
-  const width = 600;
-  const height = 300;
-  const padding = 40;
+  const width = Math.max(600, data.length * 70);
+  const height = 420;
+
+  const paddingTop = 40;
+  const paddingRight = 40;
+  const paddingBottom = 150;
+  const paddingLeft = 55;
 
   const maxXP = Math.max(...data.map((d) => d.xp));
   const yMax = Math.ceil(maxXP / 1000) * 1000;
@@ -82,26 +86,26 @@ export default function XPByProjectGraph({ token }: { token: string }) {
 
   return (
     <div className="xp-graph">
-      <h3 className="xp-graph-title">XP by Project</h3>
-
       <svg className="xp-graph-svg" viewBox={`0 0 ${width} ${height}`}>
-        {/* Y AXIS + GRID */}
         {Array.from({ length: ticks + 1 }).map((_, i) => {
           const value = (yMax / ticks) * i;
-          const y = height - padding - (value / yMax) * (height - padding * 2);
+          const y =
+            height -
+            paddingBottom -
+            (value / yMax) * (height - paddingTop - paddingBottom);
 
           return (
             <g key={`y-${i}`}>
               <line
-                x1={padding}
-                x2={width - padding}
+                x1={paddingLeft}
+                x2={width - paddingRight}
                 y1={y}
                 y2={y}
                 className="xp-grid-line"
               />
 
               <text
-                x={padding - 8}
+                x={paddingLeft - 8}
                 y={y + 4}
                 className="xp-y-label"
                 textAnchor="end"
@@ -112,30 +116,31 @@ export default function XPByProjectGraph({ token }: { token: string }) {
           );
         })}
 
-        {/* AXES */}
         <line
-          x1={padding}
-          y1={padding}
-          x2={padding}
-          y2={height - padding}
+          x1={paddingLeft}
+          y1={paddingTop}
+          x2={paddingLeft}
+          y2={height - paddingBottom}
           className="xp-axis"
         />
         <line
-          x1={padding}
-          y1={height - padding}
-          x2={width - padding}
-          y2={height - padding}
+          x1={paddingLeft}
+          y1={height - paddingBottom}
+          x2={width - paddingRight}
+          y2={height - paddingBottom}
           className="xp-axis"
         />
 
-        {/* BARS */}
         {data.map((d, i) => {
-          const barHeight = (d.xp / yMax) * (height - padding * 2);
+          const chartHeight = height - paddingTop - paddingBottom;
+          const barHeight = (d.xp / yMax) * chartHeight;
+          const barWidth = (width - paddingLeft - paddingRight) / data.length;
 
-          const barWidth = (width - padding * 2) / data.length;
+          const x = paddingLeft + i * barWidth + 10;
+          const y = height - paddingBottom - barHeight;
 
-          const x = padding + i * barWidth + 10;
-          const y = height - padding - barHeight;
+          const labelX = x + (barWidth - 20) / 2;
+          const labelY = height - paddingBottom + 18;
 
           return (
             <g key={d.project}>
@@ -149,7 +154,7 @@ export default function XPByProjectGraph({ token }: { token: string }) {
               />
 
               <text
-                x={x + (barWidth - 20) / 2}
+                x={labelX}
                 y={y - 6}
                 textAnchor="middle"
                 className="xp-bar-value"
@@ -158,9 +163,9 @@ export default function XPByProjectGraph({ token }: { token: string }) {
               </text>
 
               <text
-                transform={`translate(${x + (barWidth - 20) / 2}, ${
-                  height - padding + 6
-                }) rotate(-60)`}
+                x={labelX}
+                y={labelY}
+                transform={`rotate(-50 ${labelX} ${labelY})`}
                 textAnchor="end"
                 className="xp-project-label"
               >
